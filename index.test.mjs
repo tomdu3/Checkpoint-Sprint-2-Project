@@ -19,12 +19,14 @@ test("mocks a fetch function", async () => {
   // In this example, we set up nock so that it looks for GET requests to
   // https://example.com/test (no other URLs will work) and responds with a 200
   // HTTP status code, and the body {"user": "someone"}.
-  const scope = nock("https://example.com").get("/test").reply(200, JSON.stringify({ user: "someone" }));
+  const scope = nock("https://www.codewars.com")
+    .get("/api/v1/users/tomdu3")
+    .reply(200, JSON.stringify({ user: "tomdu3" }));
 
   // Check that the response we got back included the fake body we set up.
   const response = await makeFetchRequest();
   const parsedResponse = await response.json();
-  assert(parsedResponse.user === "someone");
+  assert(parsedResponse.user === "tomdu3");
 
   // Ensure that a fetch request has been replaced by the nock library. This
   // helps ensure that you're not making real fetch requests that don't match

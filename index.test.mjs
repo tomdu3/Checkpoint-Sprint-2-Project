@@ -10,7 +10,7 @@
 import test from "node:test";
 import assert from "node:assert";
 import nock from "nock";
-import { makeFetchRequest } from "./index.mjs";
+import { makeFetchRequest } from "./utils.mjs";
 
 test("mocks a fetch function", async () => {
   // Create a fetch request "mock" using the nock library, which "replaces"
@@ -21,12 +21,11 @@ test("mocks a fetch function", async () => {
   // HTTP status code, and the body {"user": "someone"}.
   const scope = nock("https://www.codewars.com")
     .get("/api/v1/users/tomdu3")
-    .reply(200, JSON.stringify({ user: "tomdu3" }));
+    .reply(200, { user: "tomdu3" });
 
   // Check that the response we got back included the fake body we set up.
   const response = await makeFetchRequest();
-  const parsedResponse = await response.json();
-  assert(parsedResponse.user === "tomdu3");
+  assert(response.user === "tomdu3");
 
   // Ensure that a fetch request has been replaced by the nock library. This
   // helps ensure that you're not making real fetch requests that don't match

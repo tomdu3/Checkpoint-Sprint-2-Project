@@ -8,10 +8,18 @@
 </head>
 
 <body>
-  <div class="">
-    <h1 class="">Codewars leaderboard</h1>
-    <p id="user-data"></p>
-  </div>
+  <main>
+    <h1>Codewars leaderboard</h1>
+    <form id="leaderboard-form">
+      <label for="usernames-input">Codewars usernames (comma-separated):</label>
+      <input type="text" id="usernames-input" name="usernames"
+        placeholder="e.g. CodeYourFuture, 40thieves, SallyMcGrath" required minlength="3" />
+      <button type="submit" id="submit-btn">Fetch Leaderboard</button>
+    </form>
+    <!-- display userData with aria-live for screen readers, and 
+    display loading message while fetching-->
+    <div id="user-data" aria-live="polite"></div>
+  </main>
 </body>
 
 <script src="index.mjs" type="module"></script>

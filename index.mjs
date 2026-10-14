@@ -8,9 +8,9 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const usernames = usernamesInput.value.trim();
-  if (!usernames) {
+  if (!usernames || usernames.length < 3) {
     userDataElement.innerHTML =
-      '<p class="error-message" role="alert">Please enter at least one username.</p>';
+      '<p class="error-message" role="alert">Please enter at least 3 characters.</p>';
     return;
   }
 

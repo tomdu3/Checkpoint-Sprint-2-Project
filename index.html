@@ -13,7 +13,7 @@
     <form id="leaderboard-form">
       <label for="usernames-input">Codewars usernames (comma-separated):</label>
       <input type="text" id="usernames-input" name="usernames"
-        placeholder="e.g. CodeYourFuture, 40thieves, SallyMcGrath" required />
+        placeholder="e.g. CodeYourFuture, 40thieves, SallyMcGrath" required minlength="3" />
       <button type="submit" id="submit-btn">Fetch Leaderboard</button>
     </form>
     <!-- display userData with aria-live for screen readers, and 

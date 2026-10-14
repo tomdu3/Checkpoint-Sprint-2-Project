@@ -1,10 +1,22 @@
 // Fetches user profile data from the Codewars API for a given username.
 export async function makeFetchRequest(username = "tomdu3") {
-  const response = await fetch(
-    `https://www.codewars.com/api/v1/users/${username}`,
-  );
+  let response;
+  try {
+    response = await fetch(
+      `https://www.codewars.com/api/v1/users/${username}`,
+    );
+  } catch {
+    const networkError = new Error(
+      "Network error: Unable to connect to Codewars. Please check your internet connection and try again.",
+    );
+    networkError.isNetworkError = true;
+    throw networkError;
+  }
+
   if (!response.ok) {
-    throw new Error(`Failed to fetch user ${username}`);
+    const error = new Error(`Failed to fetch user ${username}`);
+    error.status = response.status;
+    throw error;
   }
   return response.json();
 }
@@ -30,9 +42,37 @@ export async function fetchMultipleUsers(usernames) {
     userList.map(async (username) => {
       try {
         return await makeFetchRequest(username);
-      } catch {
-        return { // Returns an error object if a user is not found
-          error: `User '${username}' not found`,
+      } catch (error) {
+        if (error.isNetworkError) {
+          return {
+            error:
+              "Network error: Unable to connect to Codewars. Please check your internet connection and try again.",
+          };
+        }
+        if (error.status === 404) {
+          return {
+            error: `User '${username}' not found`,
+          };
+        }
+        if (error.status === 429) {
+          return {
+            error: `Rate limit exceeded while fetching user '${username}'. Please wait a moment and try again.`,
+          };
+        }
+        if (error.status >= 500) {
+          return {
+            error: `Codewars server error (${error.status}). Please try again later.`,
+          };
+        }
+        if (error.status === 400) {
+          return {
+            error: `Bad request for user '${username}'. Please check the username and try again.`,
+          };
+        }
+        return {
+          error:
+            error.message ||
+            `Failed to fetch user '${username}'. Please try again.`,
         };
       }
     }),

@@ -1,7 +1,8 @@
-import { makeFetchRequest } from "./utils.mjs";
+import { fetchMultipleUsers } from "./utils.mjs";
 
-const userData = await makeFetchRequest("tomdu3");
-// console.log(JSON.stringify(userData, null, 2));
+// fetch multiple users
+
+const userData = await fetchMultipleUsers("tomdu3, johndoe888");
 
 // display userData
 

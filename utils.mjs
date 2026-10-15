@@ -78,3 +78,27 @@ export async function fetchMultipleUsers(usernames) {
     }),
   );
 }
+
+// Calculates all possible language rankings from fetched users data, plus 'overall'.
+export function getAvailableLanguages(users) {
+  if (!Array.isArray(users)) {
+    return ["overall"];
+  }
+
+  const languages = new Set();
+  for (const user of users) {
+    if (
+      user &&
+      !user.error &&
+      user.ranks &&
+      typeof user.ranks.languages === "object" &&
+      user.ranks.languages !== null
+    ) {
+      for (const language of Object.keys(user.ranks.languages)) {
+        languages.add(language);
+      }
+    }
+  }
+
+  return ["overall", ...Array.from(languages).sort()];
+}

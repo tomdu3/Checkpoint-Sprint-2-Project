@@ -1,7 +1,11 @@
 import test from "node:test";
 import assert from "node:assert";
 import nock from "nock";
-import { makeFetchRequest, fetchMultipleUsers } from "./utils.mjs";
+import {
+  makeFetchRequest,
+  fetchMultipleUsers,
+  getAvailableLanguages,
+} from "./utils.mjs";
 
 test("makeFetchRequest() fetches user data from codewars API", async () => {
   // Create a fetch request "mock" using the nock library
@@ -157,4 +161,61 @@ test("fetchMultipleUsers() returns rate limit error message when Codewars return
   });
 
   assert(scope.isDone() === true, "No matching fetch request has been made");
+});
+
+test("getAvailableLanguages() returns ['overall'] for empty input or non-array", () => {
+  assert.deepStrictEqual(getAvailableLanguages([]), ["overall"]);
+  assert.deepStrictEqual(getAvailableLanguages(null), ["overall"]);
+  assert.deepStrictEqual(getAvailableLanguages(undefined), ["overall"]);
+});
+
+test("getAvailableLanguages() extracts and sorts unique languages from users plus 'overall'", () => {
+  const users = [
+    {
+      username: "user1",
+      ranks: {
+        languages: {
+          ruby: { score: 100 },
+          javascript: { score: 200 },
+        },
+      },
+    },
+    {
+      username: "user2",
+      ranks: {
+        languages: {
+          python: { score: 150 },
+          javascript: { score: 300 },
+        },
+      },
+    },
+  ];
+
+  assert.deepStrictEqual(getAvailableLanguages(users), [
+    "overall",
+    "javascript",
+    "python",
+    "ruby",
+  ]);
+});
+
+test("getAvailableLanguages() ignores error objects and users without language rankings", () => {
+  const users = [
+    { error: "User 'invalid_user' not found" },
+    { username: "no_ranks_user" },
+    { username: "empty_ranks", ranks: {} },
+    {
+      username: "user1",
+      ranks: {
+        languages: {
+          typescript: { score: 50 },
+        },
+      },
+    },
+  ];
+
+  assert.deepStrictEqual(getAvailableLanguages(users), [
+    "overall",
+    "typescript",
+  ]);
 });

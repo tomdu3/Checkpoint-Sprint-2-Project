@@ -43,3 +43,86 @@ This document outlines the testing strategy and verifies that each requirement f
   - The user with the highest score is positioned at the top, and subsequent users follow in decreasing order.
 
     ![Sorted scores](./docs/sorted-scores.png)
+
+- [x] 8. Users without a ranking in a chosen language are not shown in that table
+  - `getLeaderboard()` checks whether `user.ranks.languages[ranking]?.score` exists and is a valid number.
+  - If a user has not completed katas in the selected language, they are omitted from the table.
+  - If no users have a ranking in the chosen language, a message is shown indicating no users were found for that language.
+
+    ![Excluded user without ranking](./docs/user-excluded-language.png)
+
+- [x] 9. The top user's score is visually highlighted
+  - The first row in the sorted table receives the `.top-user` class (golden-tinted background), and the score cell receives `.top-score` (bold with amber color) to visually highlight the top achiever.
+
+- [x] 10. The website must score 100% for accessibility in Lighthouse in the Desktop device mode, for all views in the website
+  - The website was tested using Google Lighthouse in Desktop mode and scored 100% for accessibility across all views.
+
+- [x] 11. Unit tests must be written for at least one non-trivial function
+  - Comprehensive unit tests are implemented in [`utils.test.mjs`](./utils.test.mjs) testing four key utility functions:
+    - `makeFetchRequest()`: verifies API data fetching, 404 error throwing, and network error handling.
+    - `fetchMultipleUsers()`: verifies concurrent fetching, handling missing users, deduplication, empty inputs, network errors, server 500 errors, and rate limits.
+    - `getAvailableLanguages()`: verifies language extraction, deduplication, sorting, and edge cases.
+    - `getLeaderboard()`: verifies filtering, sorting descending by score, language-specific filtering, and handling missing clans.
+  - Running `npm test` passes all 18 unit tests:
+
+  ```
+  ✔ makeFetchRequest() fetches user data from codewars API (11.911474ms)
+    ✔ makeFetchRequest() throws an error for invalid username (2.46811ms)
+    ✔ fetchMultipleUsers() fetches multiple user data from codewars API (4.034871ms)
+    ✔ fetchMultipleUsers() returns array conaining error objects for the users that are not found (3.967012ms)
+    ✔ fetchMultipleUsers() returns array with one error object when only one user is not found (1.877477ms)
+    ✔ fetchMultipleUsers() removes duplicate usernames (2.092434ms)
+    ✔ fetchMultipleUsers() returns empty array when no usernames are provided (0.130048ms)
+    ✔ fetchMultipleUsers() returns array of error objects when all users are not found (2.597818ms)
+    ✔ fetchMultipleUsers() returns actionable network error message when network fails (2.159203ms)
+    ✔ fetchMultipleUsers() returns server error message when Codewars returns 500 (1.831437ms)
+    ✔ fetchMultipleUsers() returns rate limit error message when Codewars returns 429 (1.712819ms)
+    ✔ getAvailableLanguages() returns ['overall'] for empty input or non-array (0.201438ms)
+    ✔ getAvailableLanguages() extracts and sorts unique languages from users plus 'overall' (0.110769ms)
+    ✔ getAvailableLanguages() ignores error objects and users without language rankings (0.079809ms)
+    ✔ getLeaderboard() returns empty array for invalid inputs (0.128968ms)
+    ✔ getLeaderboard() sorts users by overall score descending (0.115918ms)
+    ✔ getLeaderboard() filters and sorts by specific language, omitting users without that language (0.105639ms)
+    ✔ getLeaderboard() handles missing clan and ignores error objects (0.079679ms)
+    ℹ tests 18
+    ℹ suites 0
+    ℹ pass 18
+    ℹ fail 0
+    ℹ cancelled 0
+    ℹ skipped 0
+    ℹ todo 0
+    ℹ duration_ms 113.695382
+  ```
+
+- [x] 12. The project must not contain any dead code. All written JavaScript and CSS must be used.
+  - There is no unused or dead code.
+
+- [x] 13. Searching for a user which doesn't exist should show a message to the user explaining this
+  - If a user does not exist (404 from Codewars), a message is displayed: `User '<username>' not found. Please check the spelling and try again.`
+  - If multiple users are entered where some exist and some do not, the valid users are rendered in the leaderboard table while each invalid user is clearly reported in the error section.
+
+    ![Invalid user error message](./docs/user-not-found-error.png)
+
+- [x] 14. If fetching from the Codewars API errors (e.g. because you're offline, or made a bad request), the user must be shown a useful error message in the UI
+  - If the browser is offline (`!navigator.onLine`) or `fetch` fails due to network loss, the UI displays: `"You appear to be offline. Please check your internet connection and try again."` or `"Network error: Unable to connect to Codewars. Please check your internet connection and try again."`.
+  - If the server returns a 500 error, the UI displays: `"Codewars server error (500). Please try again later."`.
+  - If rate limited (429), the UI displays: `"Rate limit exceeded while fetching user '<username>'. Please wait a moment and try again."`.
+
+    ![Network error message](./docs/network-error.png)
+
+- [x] 15. Error messages should not make misleading claims about what went wrong, and it should be clear what the user should do about it to rectify the situation
+  - Error handling explicitly differentiates network errors, 5xx server issues, 429 rate limits, and 404 not found errors.
+  - Network and server failures are never misreported as "User not found".
+  - Every error message includes an actionable remedy: verifying username spelling, checking network connection, or waiting before retrying.
+
+## Additional Validation
+
+### HTML Validation
+
+The HTML markup was validated using the W3C Nu HTML Checker:
+- Verified valid HTML5 semantic structure: `<main>`, `<form>`, `<label>`, `<input>`, `<button>`, `<select>`, `<template>`, and `<table id="leaderboard-table">`.
+- Ensured form control labels match their respective input IDs (`for="usernames-input"`, `for="language-select"`).
+- Ensured table accessibility with `<caption>` and `<th scope="col">`.
+- Ensured ARIA live regions (`aria-live="polite"`, `role="alert"`) are correctly used without invalid ARIA references.
+
+![HTML validation result](./docs/html-validation.png)

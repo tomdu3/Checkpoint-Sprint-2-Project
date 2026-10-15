@@ -80,3 +80,20 @@ th {
 tr:nth-child(even) {
   background-color: #f9fafb;
 }
+
+/* Special table rows */
+.top-user {
+  background-color: #fef3c7 !important;
+  font-weight: bold;
+}
+
+.top-score {
+  color: #b45309;
+  font-weight: 700;
+}
+
+/* Messages */
+.error-message {
+  color: #dc2626;
+  font-weight: 600;
+}

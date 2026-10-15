@@ -102,3 +102,38 @@ export function getAvailableLanguages(users) {
 
   return ["overall", ...Array.from(languages).sort()];
 }
+
+// Filters and sorts users by their score in a given ranking ('overall' or specific language).
+// Users without a ranking for the specified language are excluded.
+// Sorted descending by score (highest to lowest).
+export function getLeaderboard(users, ranking = "overall") {
+  if (!Array.isArray(users)) {
+    return [];
+  }
+
+  const validEntries = [];
+
+  for (const user of users) {
+    if (!user || user.error || !user.ranks) continue;
+
+    let score;
+    if (ranking === "overall") {
+      score = user.ranks.overall?.score;
+    } else if (
+      user.ranks.languages &&
+      typeof user.ranks.languages === "object"
+    ) {
+      score = user.ranks.languages[ranking]?.score;
+    }
+
+    if (typeof score === "number") {
+      validEntries.push({
+        username: user.username,
+        clan: user.clan || "",
+        score: score,
+      });
+    }
+  }
+
+  return validEntries.sort((a, b) => b.score - a.score);
+}

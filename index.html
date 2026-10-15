@@ -1,56 +1,64 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codewars leaderboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Codewars leaderboard</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+  <body>
+    <main>
+      <h1>Codewars leaderboard</h1>
+      <form id="leaderboard-form">
+        <label for="usernames-input"
+          >Codewars usernames (comma-separated):</label
+        >
+        <input
+          type="text"
+          id="usernames-input"
+          name="usernames"
+          placeholder="e.g. CodeYourFuture, 40thieves, SallyMcGrath"
+          required
+          minlength="3"
+        />
+        <button type="submit" id="submit-btn">Get Data</button>
+      </form>
+      <div id="language-select-container" hidden>
+        <label for="language-select">Select ranking:</label>
+        <select id="language-select" name="language">
+          <option value="overall" selected>Overall</option>
+        </select>
+      </div>
+      <div id="leaderboard-table-container"></div>
 
-<body>
-  <main>
-    <h1>Codewars leaderboard</h1>
-    <form id="leaderboard-form">
-      <label for="usernames-input">Codewars usernames (comma-separated):</label>
-      <input type="text" id="usernames-input" name="usernames"
-        placeholder="e.g. CodeYourFuture, 40thieves, SallyMcGrath" required minlength="3" />
-      <button type="submit" id="submit-btn">Get Data</button>
-    </form>
-    <div id="language-select-container" hidden>
-      <label for="language-select">Select ranking:</label>
-      <select id="language-select" name="language">
-        <option value="overall" selected>Overall</option>
-      </select>
-    </div>
-    <div id="leaderboard-table-container"></div>
+      <template id="leaderboard-table-template">
+        <table>
+          <caption>
+            Leaderboard
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Username</th>
+              <th scope="col">Clan</th>
+              <th scope="col">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="username"></td>
+              <td class="clan"></td>
+              <td class="score"></td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
 
-    <template id="leaderboard-table-template">
-      <table>
-        <caption>Leaderboard</caption>
-        <thead>
-          <tr>
-            <th scope="col">Username</th>
-            <th scope="col">Clan</th>
-            <th scope="col">Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="username"></td>
-            <td class="clan"></td>
-            <td class="score"></td>
-          </tr>
-        </tbody>
-      </table>
-    </template>
-
-    <!-- display userData with aria-live for screen readers, and 
+      <!-- display userData with aria-live for screen readers, and 
     display loading message while fetching-->
-    <div id="user-data" aria-live="polite"></div>
-  </main>
-</body>
+      <div id="user-data" aria-live="polite"></div>
+    </main>
 
-<script src="index.mjs" type="module"></script>
-
+    <script src="index.mjs" type="module"></script>
+  </body>
 </html>

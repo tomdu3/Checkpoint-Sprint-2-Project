@@ -66,32 +66,32 @@ This document outlines the testing strategy and verifies that each requirement f
   - Running `npm test` passes all 18 unit tests:
 
   ```
-  ✔ makeFetchRequest() fetches user data from codewars API (11.911474ms)
-    ✔ makeFetchRequest() throws an error for invalid username (2.46811ms)
-    ✔ fetchMultipleUsers() fetches multiple user data from codewars API (4.034871ms)
-    ✔ fetchMultipleUsers() returns array conaining error objects for the users that are not found (3.967012ms)
-    ✔ fetchMultipleUsers() returns array with one error object when only one user is not found (1.877477ms)
-    ✔ fetchMultipleUsers() removes duplicate usernames (2.092434ms)
-    ✔ fetchMultipleUsers() returns empty array when no usernames are provided (0.130048ms)
-    ✔ fetchMultipleUsers() returns array of error objects when all users are not found (2.597818ms)
-    ✔ fetchMultipleUsers() returns actionable network error message when network fails (2.159203ms)
-    ✔ fetchMultipleUsers() returns server error message when Codewars returns 500 (1.831437ms)
-    ✔ fetchMultipleUsers() returns rate limit error message when Codewars returns 429 (1.712819ms)
-    ✔ getAvailableLanguages() returns ['overall'] for empty input or non-array (0.201438ms)
-    ✔ getAvailableLanguages() extracts and sorts unique languages from users plus 'overall' (0.110769ms)
-    ✔ getAvailableLanguages() ignores error objects and users without language rankings (0.079809ms)
-    ✔ getLeaderboard() returns empty array for invalid inputs (0.128968ms)
-    ✔ getLeaderboard() sorts users by overall score descending (0.115918ms)
-    ✔ getLeaderboard() filters and sorts by specific language, omitting users without that language (0.105639ms)
-    ✔ getLeaderboard() handles missing clan and ignores error objects (0.079679ms)
-    ℹ tests 18
-    ℹ suites 0
-    ℹ pass 18
-    ℹ fail 0
-    ℹ cancelled 0
-    ℹ skipped 0
-    ℹ todo 0
-    ℹ duration_ms 113.695382
+  ✔ makeFetchRequest() fetches user data from codewars API (12.430291ms)
+  ✔ makeFetchRequest() throws an error for invalid username (2.499388ms)
+  ✔ fetchMultipleUsers() fetches multiple user data from codewars API (3.990349ms)
+  ✔ fetchMultipleUsers() returns array conaining error objects for the users that are not found (4.027639ms)
+  ✔ fetchMultipleUsers() returns array with one error object when only one user is not found (1.961965ms)
+  ✔ fetchMultipleUsers() removes duplicate usernames (3.060141ms)
+  ✔ fetchMultipleUsers() returns empty array when no usernames are provided (0.147898ms)
+  ✔ fetchMultipleUsers() returns array of error objects when all users are not found (2.529548ms)
+  ✔ fetchMultipleUsers() throws actionable network error when network fails (2.108193ms)
+  ✔ fetchMultipleUsers() throws server error when Codewars returns 500 (1.790647ms)
+  ✔ fetchMultipleUsers() throws rate limit error when Codewars returns 429 (1.846426ms)
+  ✔ getAvailableLanguages() returns ['overall'] for empty input or non-array (0.204787ms)
+  ✔ getAvailableLanguages() extracts and sorts unique languages from users plus 'overall' (0.118828ms)
+  ✔ getAvailableLanguages() ignores error objects and users without language rankings (0.104308ms)
+  ✔ getLeaderboard() returns empty array for invalid inputs (0.137858ms)
+  ✔ getLeaderboard() sorts users by overall score descending (0.137258ms)
+  ✔ getLeaderboard() filters and sorts by specific language, omitting users without that language (0.128878ms)
+  ✔ getLeaderboard() handles missing clan and ignores error objects (0.086598ms)
+  ℹ tests 18
+  ℹ suites 0
+  ℹ pass 18
+  ℹ fail 0
+  ℹ cancelled 0
+  ℹ skipped 0
+  ℹ todo 0
+  ℹ duration_ms 115.112053
   ```
 
 - [x] 12. The project must not contain any dead code. All written JavaScript and CSS must be used.
@@ -106,7 +106,7 @@ This document outlines the testing strategy and verifies that each requirement f
 - [x] 14. If fetching from the Codewars API errors (e.g. because you're offline, or made a bad request), the user must be shown a useful error message in the UI
   - If the browser is offline (`!navigator.onLine`) or `fetch` fails due to network loss, the UI displays: `"You appear to be offline. Please check your internet connection and try again."` or `"Network error: Unable to connect to Codewars. Please check your internet connection and try again."`.
   - If the server returns a 500 error, the UI displays: `"Codewars server error (500). Please try again later."`.
-  - If rate limited (429), the UI displays: `"Rate limit exceeded while fetching user '<username>'. Please wait a moment and try again."`.
+  - If rate limited (429), the UI displays: `"Rate limit exceeded while connecting to Codewars. Please wait a moment and try again."`.
 
     ![Network error message](./docs/network-error.png)
 

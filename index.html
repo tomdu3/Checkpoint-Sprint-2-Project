@@ -22,6 +22,28 @@
         <option value="overall" selected>Overall</option>
       </select>
     </div>
+    <div id="leaderboard-table-container"></div>
+
+    <template id="leaderboard-table-template">
+      <table>
+        <caption>Leaderboard</caption>
+        <thead>
+          <tr>
+            <th scope="col">Username</th>
+            <th scope="col">Clan</th>
+            <th scope="col">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="username"></td>
+            <td class="clan"></td>
+            <td class="score"></td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
+
     <!-- display userData with aria-live for screen readers, and 
     display loading message while fetching-->
     <div id="user-data" aria-live="polite"></div>

@@ -1,0 +1,32 @@
+:root {
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  color: #1f2937;
+  font-size: 1.1rem;
+}
+
+body {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+form {
+  margin-bottom: 1.5rem;
+}
+
+#usernames-input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 60%;
+  max-width: 4000px;
+  border-radius: 0.5rem;
+  border: 1px solid #1f2937;
+}
+
+#submit-btn {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  border: 1px solid #1f2937;
+}

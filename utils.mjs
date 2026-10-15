@@ -2,9 +2,7 @@
 export async function makeFetchRequest(username = "tomdu3") {
   let response;
   try {
-    response = await fetch(
-      `https://www.codewars.com/api/v1/users/${username}`,
-    );
+    response = await fetch(`https://www.codewars.com/api/v1/users/${username}`);
   } catch {
     const networkError = new Error(
       "Network error: Unable to connect to Codewars. Please check your internet connection and try again.",

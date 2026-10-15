@@ -1,7 +1,12 @@
 import test from "node:test";
 import assert from "node:assert";
 import nock from "nock";
-import { makeFetchRequest, fetchMultipleUsers } from "./utils.mjs";
+import {
+  makeFetchRequest,
+  fetchMultipleUsers,
+  getAvailableLanguages,
+  getLeaderboard,
+} from "./utils.mjs";
 
 test("makeFetchRequest() fetches user data from codewars API", async () => {
   // Create a fetch request "mock" using the nock library
@@ -157,4 +162,154 @@ test("fetchMultipleUsers() returns rate limit error message when Codewars return
   });
 
   assert(scope.isDone() === true, "No matching fetch request has been made");
+});
+
+test("getAvailableLanguages() returns ['overall'] for empty input or non-array", () => {
+  assert.deepStrictEqual(getAvailableLanguages([]), ["overall"]);
+  assert.deepStrictEqual(getAvailableLanguages(null), ["overall"]);
+  assert.deepStrictEqual(getAvailableLanguages(undefined), ["overall"]);
+});
+
+test("getAvailableLanguages() extracts and sorts unique languages from users plus 'overall'", () => {
+  const users = [
+    {
+      username: "user1",
+      ranks: {
+        languages: {
+          ruby: { score: 100 },
+          javascript: { score: 200 },
+        },
+      },
+    },
+    {
+      username: "user2",
+      ranks: {
+        languages: {
+          python: { score: 150 },
+          javascript: { score: 300 },
+        },
+      },
+    },
+  ];
+
+  assert.deepStrictEqual(getAvailableLanguages(users), [
+    "overall",
+    "javascript",
+    "python",
+    "ruby",
+  ]);
+});
+
+test("getAvailableLanguages() ignores error objects and users without language rankings", () => {
+  const users = [
+    { error: "User 'invalid_user' not found" },
+    { username: "no_ranks_user" },
+    { username: "empty_ranks", ranks: {} },
+    {
+      username: "user1",
+      ranks: {
+        languages: {
+          typescript: { score: 50 },
+        },
+      },
+    },
+  ];
+
+  assert.deepStrictEqual(getAvailableLanguages(users), [
+    "overall",
+    "typescript",
+  ]);
+});
+
+test("getLeaderboard() returns empty array for invalid inputs", () => {
+  assert.deepStrictEqual(getLeaderboard([]), []);
+  assert.deepStrictEqual(getLeaderboard(null), []);
+  assert.deepStrictEqual(getLeaderboard(undefined), []);
+});
+
+test("getLeaderboard() sorts users by overall score descending", () => {
+  const users = [
+    {
+      username: "userB",
+      clan: "Clan 2",
+      ranks: { overall: { score: 200 } },
+    },
+    {
+      username: "userA",
+      clan: "Clan 1",
+      ranks: { overall: { score: 500 } },
+    },
+    {
+      username: "userC",
+      clan: "Clan 3",
+      ranks: { overall: { score: 100 } },
+    },
+  ];
+
+  const result = getLeaderboard(users, "overall");
+  assert.deepStrictEqual(result, [
+    { username: "userA", clan: "Clan 1", score: 500 },
+    { username: "userB", clan: "Clan 2", score: 200 },
+    { username: "userC", clan: "Clan 3", score: 100 },
+  ]);
+});
+
+test("getLeaderboard() filters and sorts by specific language, omitting users without that language", () => {
+  const users = [
+    {
+      username: "userA",
+      clan: "Clan 1",
+      ranks: {
+        languages: {
+          ruby: { score: 150 },
+        },
+      },
+    },
+    {
+      username: "userB",
+      clan: "Clan 2",
+      ranks: {
+        languages: {
+          javascript: { score: 250 },
+        },
+      },
+    },
+    {
+      username: "userC",
+      clan: "Clan 3",
+      ranks: {
+        languages: {
+          javascript: { score: 400 },
+          ruby: { score: 50 },
+        },
+      },
+    },
+  ];
+
+  const jsResult = getLeaderboard(users, "javascript");
+  assert.deepStrictEqual(jsResult, [
+    { username: "userC", clan: "Clan 3", score: 400 },
+    { username: "userB", clan: "Clan 2", score: 250 },
+  ]);
+
+  const rubyResult = getLeaderboard(users, "ruby");
+  assert.deepStrictEqual(rubyResult, [
+    { username: "userA", clan: "Clan 1", score: 150 },
+    { username: "userC", clan: "Clan 3", score: 50 },
+  ]);
+});
+
+test("getLeaderboard() handles missing clan and ignores error objects", () => {
+  const users = [
+    { error: "User not found" },
+    {
+      username: "userNoClan",
+      ranks: { overall: { score: 80 } },
+    },
+  ];
+
+  const result = getLeaderboard(users, "overall");
+  assert.deepStrictEqual(result, [
+    { username: "userNoClan", clan: "", score: 80 },
+  ]);
 });

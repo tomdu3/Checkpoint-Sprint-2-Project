@@ -1,0 +1,99 @@
+:root {
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  color: #1f2937;
+  font-size: 1.1rem;
+}
+
+body {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Username input and submit button container */
+form {
+  margin-bottom: 1.5rem;
+}
+
+#usernames-input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 60%;
+  max-width: 4000px;
+  border-radius: 0.5rem;
+  border: 1px solid #1f2937;
+}
+
+#submit-btn {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  border: 1px solid #1f2937;
+}
+
+/* Language select container and dropdown menu */
+
+#language-select-container {
+  margin: 1.5rem 0 1rem;
+}
+
+#language-select {
+  padding: 0.4rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #1f2937;
+}
+
+/* Leaderboard table */
+
+#leaderboard-table-container {
+  margin-top: 1rem;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+caption {
+  text-align: left;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+th,
+td {
+  border: 1px solid #d1d5db;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* Special table rows */
+.top-user {
+  background-color: #fef3c7 !important;
+  font-weight: bold;
+}
+
+.top-score {
+  color: #b45309;
+  font-weight: 700;
+}
+
+/* Messages */
+.error-message {
+  color: #dc2626;
+  font-weight: 600;
+}

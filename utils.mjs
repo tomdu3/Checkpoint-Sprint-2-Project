@@ -78,3 +78,62 @@ export async function fetchMultipleUsers(usernames) {
     }),
   );
 }
+
+// Calculates all possible language rankings from fetched users data, plus 'overall'.
+export function getAvailableLanguages(users) {
+  if (!Array.isArray(users)) {
+    return ["overall"];
+  }
+
+  const languages = new Set();
+  for (const user of users) {
+    if (
+      user &&
+      !user.error &&
+      user.ranks &&
+      typeof user.ranks.languages === "object" &&
+      user.ranks.languages !== null
+    ) {
+      for (const language of Object.keys(user.ranks.languages)) {
+        languages.add(language);
+      }
+    }
+  }
+
+  return ["overall", ...Array.from(languages).sort()];
+}
+
+// Filters and sorts users by their score in a given ranking ('overall' or specific language).
+// Users without a ranking for the specified language are excluded.
+// Sorted descending by score (highest to lowest).
+export function getLeaderboard(users, ranking = "overall") {
+  if (!Array.isArray(users)) {
+    return [];
+  }
+
+  const validEntries = [];
+
+  for (const user of users) {
+    if (!user || user.error || !user.ranks) continue;
+
+    let score;
+    if (ranking === "overall") {
+      score = user.ranks.overall?.score;
+    } else if (
+      user.ranks.languages &&
+      typeof user.ranks.languages === "object"
+    ) {
+      score = user.ranks.languages[ranking]?.score;
+    }
+
+    if (typeof score === "number") {
+      validEntries.push({
+        username: user.username,
+        clan: user.clan || "",
+        score: score,
+      });
+    }
+  }
+
+  return validEntries.sort((a, b) => b.score - a.score);
+}

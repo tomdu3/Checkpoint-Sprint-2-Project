@@ -120,45 +120,39 @@ test("fetchMultipleUsers() returns array of error objects when all users are not
   assert(scope.isDone() === true, "No matching fetch request has been made");
 });
 
-test("fetchMultipleUsers() returns actionable network error message when network fails", async () => {
+test("fetchMultipleUsers() throws actionable network error when network fails", async () => {
   const scope = nock("https://www.codewars.com")
     .get("/api/v1/users/offline_user")
     .replyWithError("Network failure");
 
-  const response = await fetchMultipleUsers("offline_user");
-  assert.strictEqual(response.length, 1);
-  assert.deepStrictEqual(response[0], {
-    error:
+  await assert.rejects(fetchMultipleUsers("offline_user"), {
+    message:
       "Network error: Unable to connect to Codewars. Please check your internet connection and try again.",
   });
 
   assert(scope.isDone() === true, "No matching fetch request has been made");
 });
 
-test("fetchMultipleUsers() returns server error message when Codewars returns 500", async () => {
+test("fetchMultipleUsers() throws server error when Codewars returns 500", async () => {
   const scope = nock("https://www.codewars.com")
     .get("/api/v1/users/server_error_user")
     .reply(500);
 
-  const response = await fetchMultipleUsers("server_error_user");
-  assert.strictEqual(response.length, 1);
-  assert.deepStrictEqual(response[0], {
-    error: "Codewars server error (500). Please try again later.",
+  await assert.rejects(fetchMultipleUsers("server_error_user"), {
+    message: "Codewars server error (500). Please try again later.",
   });
 
   assert(scope.isDone() === true, "No matching fetch request has been made");
 });
 
-test("fetchMultipleUsers() returns rate limit error message when Codewars returns 429", async () => {
+test("fetchMultipleUsers() throws rate limit error when Codewars returns 429", async () => {
   const scope = nock("https://www.codewars.com")
     .get("/api/v1/users/rate_limited_user")
     .reply(429);
 
-  const response = await fetchMultipleUsers("rate_limited_user");
-  assert.strictEqual(response.length, 1);
-  assert.deepStrictEqual(response[0], {
-    error:
-      "Rate limit exceeded while fetching user 'rate_limited_user'. Please wait a moment and try again.",
+  await assert.rejects(fetchMultipleUsers("rate_limited_user"), {
+    message:
+      "Rate limit exceeded while connecting to Codewars. Please wait a moment and try again.",
   });
 
   assert(scope.isDone() === true, "No matching fetch request has been made");

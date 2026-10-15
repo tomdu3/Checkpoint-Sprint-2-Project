@@ -14,6 +14,25 @@ export async function makeFetchRequest(username = "tomdu3") {
   }
 
   if (!response.ok) {
+    if (response.status === 404) {
+      const error = new Error(`Failed to fetch user ${username}`);
+      error.status = 404;
+      throw error;
+    }
+    if (response.status === 429) {
+      const error = new Error(
+        "Rate limit exceeded while connecting to Codewars. Please wait a moment and try again.",
+      );
+      error.status = 429;
+      throw error;
+    }
+    if (response.status >= 500) {
+      const error = new Error(
+        `Codewars server error (${response.status}). Please try again later.`,
+      );
+      error.status = response.status;
+      throw error;
+    }
     const error = new Error(`Failed to fetch user ${username}`);
     error.status = response.status;
     throw error;
@@ -43,37 +62,14 @@ export async function fetchMultipleUsers(usernames) {
       try {
         return await makeFetchRequest(username);
       } catch (error) {
-        if (error.isNetworkError) {
-          return {
-            error:
-              "Network error: Unable to connect to Codewars. Please check your internet connection and try again.",
-          };
-        }
+        // Individual user not found (404) - return error object so remaining users can still be displayed
         if (error.status === 404) {
           return {
             error: `User '${username}' not found`,
           };
         }
-        if (error.status === 429) {
-          return {
-            error: `Rate limit exceeded while fetching user '${username}'. Please wait a moment and try again.`,
-          };
-        }
-        if (error.status >= 500) {
-          return {
-            error: `Codewars server error (${error.status}). Please try again later.`,
-          };
-        }
-        if (error.status === 400) {
-          return {
-            error: `Bad request for user '${username}'. Please check the username and try again.`,
-          };
-        }
-        return {
-          error:
-            error.message ||
-            `Failed to fetch user '${username}'. Please try again.`,
-        };
+        // System-wide errors (network failure, 5xx server error, 429 rate limit) re-throw to fail fast
+        throw error;
       }
     }),
   );
